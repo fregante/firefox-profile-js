@@ -316,56 +316,6 @@ describe('firefox_profile', function () {
     });
   });
 
-  describe('#__addonDetails', function () {
-    it('should correctly retrieve addon details from rdf that does not use namespace', function (done) {
-      fp._addonDetails(
-        path.join(__dirname, 'extensions/test.no-namespace-template.xpi'),
-        function (extDetails) {
-          expect(extDetails).to.be.eql({
-            id: 'no-namespace@test.test',
-            name: 'test-extension without namespace',
-            unpack: true,
-            isNative: false,
-            version: '2.1.0',
-          });
-          done();
-        }
-      );
-    });
-
-    it('should correctly retrieve addon details from rdf that uses namespace', function (done) {
-      fp._addonDetails(
-        path.join(__dirname, 'extensions/test.template.xpi'),
-        function (extDetails) {
-          expect(extDetails).to.be.eql({
-            id: 'with-namespace@test.test',
-            name: 'test-extension with namespace',
-            unpack: false,
-            isNative: false,
-            version: '2.2.99',
-          });
-          done();
-        }
-      );
-    });
-
-    it('should correctly retrieve addon details from addon that does not use install.rdf', function (done) {
-      fp._addonDetails(
-        path.join(__dirname, 'extensions/test.jetpack-template.xpi'),
-        function (extDetails) {
-          expect(extDetails).to.be.eql({
-            id: 'jetpack-addon@test.test',
-            name: 'Jetpack-addon-test',
-            unpack: false,
-            isNative: true,
-            version: '0.0.1',
-          });
-          done();
-        }
-      );
-    });
-  });
-
   describe('#_sanitizePref()', function () {
     it('you correctly deal you boolean values', function () {
       expect(fp._sanitizePref('true')).to.be.true;
@@ -396,21 +346,6 @@ describe('firefox_profile', function () {
       );
     });
 
-    it('should unzip extensions in profile folder for jetpack addons', function (done) {
-      fp.addExtension(
-        path.join(__dirname, 'extensions/jetpack-extension.xpi'),
-        function () {
-          var exensionDir = path.join(
-            fp.profileDir,
-            'extensions',
-            'jetpack-addon@test.test.xpi'
-          );
-          expect(fs.statSync(exensionDir).isDirectory()).to.be.false;
-          done();
-        }
-      );
-    });
-
     it('should not unzip extensions in profile folder when unpack is false', function (done) {
       fp.addExtension(
         path.join(__dirname, 'extensions/packed-extension.xpi'),
@@ -436,30 +371,6 @@ describe('firefox_profile', function () {
             'webextension@test.test.xpi'
           );
           expect(fs.statSync(exensionDir).isFile()).to.be.true;
-          done();
-        }
-      );
-    });
-
-    it('should return the addon details gathered from install.rdf', function (done) {
-      fp.addExtension(
-        path.join(__dirname, 'extensions/png-extension.xpi'),
-        function (err, addonDetails) {
-          expect(addonDetails.id).to.equal('id@test.test');
-          expect(addonDetails.name).to.equal('test-extension');
-          expect(addonDetails.version).to.equal('2.1.0');
-          done();
-        }
-      );
-    });
-
-    it('should return the addon details gathered from package.json', function (done) {
-      fp.addExtension(
-        path.join(__dirname, 'extensions/jetpack-extension.xpi'),
-        function (err, addonDetails) {
-          expect(addonDetails.id).to.equal('jetpack-addon@test.test');
-          expect(addonDetails.name).to.equal('Jetpack-addon-test');
-          expect(addonDetails.version).to.equal('0.0.1');
           done();
         }
       );

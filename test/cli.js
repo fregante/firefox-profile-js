@@ -21,17 +21,6 @@ describe('firefox profile command line interface (CLI)', function() {
     });
   });
 
-  describe('when called with -o or --output flag', function () {
-    it('should create an empty profile in the output folder', function (done) {
-      exec('./lib/cli.js -e ./test/extensions/jetpack-extension.xpi -o ' + testProfiles.dest, function (err) {
-        expect(err).to.be.null;
-        expect(fs.existsSync(testProfiles.dest)).to.be.true;
-        expect(fs.statSync(path.join(testProfiles.dest, 'extensions')).isDirectory()).to.be.true;
-        done();
-      });
-    });
-  });
-
   // can't really test this on travis-ci...
   describe.skip('when called with -p or --profile param', function () {
     it('should copy an existing profile');
